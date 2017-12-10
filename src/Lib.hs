@@ -3,10 +3,10 @@
 module Lib where
 
 import Debug.Trace
--- import System.Environment
 
-data Nuc = A | C | T | G | N deriving Show
+data Nuc = A | C | T | G | N deriving (Show, Eq)
 type S = Bool
+data Col = Col {state :: S, score :: Float, chain :: [S]}
 
 someFunc :: IO ()
 someFunc = do
@@ -14,14 +14,16 @@ someFunc = do
   let _:ls = lines fc
   let dna = concat ls
   let os = map toNuc dna
-  let v = foldl vnext v0 os
-  let ((s1, ss1), (s2, ss2)) = v ((0, [False]), (0, [True]))
+  let v = foldl vsum v0 os
+  let (Col {score=n1, chain=ss1}, Col {score=n0, chain=ss0}) =
+        v (Col {state=False, score=0, chain=[False]}
+          ,Col {state=True, score=0, chain=[True]})
   let ds1 = map (\b -> if b then '1' else '0') ss1
   putStrLn ds1
-  print s1
-  let ds2 = map (\b -> if b then '1' else '0') ss2
-  putStrLn ds2
-  print s2
+  print n1
+  let ds0 = map (\b -> if b then '1' else '0') ss0
+  putStrLn ds0
+  print n0
 
 toNuc :: Char -> Nuc
 toNuc 'A' = A
@@ -31,43 +33,36 @@ toNuc 'G' = G
 toNuc x = trace [x] N
 
 -- type V = Int -> S -> (Float, [S])
-type V = ((Float, [S]), (Float, [S])) -> ((Float, [S]), (Float, [S]))
+type V = (Col, Col) -> (Col, Col)
 
 v0 :: V
-v0 ((_, [False]), (_, [True])) = ((log 0.996, [False]), (log 0.004, [True]))
+v0 (Col {chain=[False]}, Col {chain=[True]}) =
+  (Col {state=False, score=log 0.996, chain=[False]}
+  ,Col {state=True, score=log 0.004, chain=[True]})
+v0 _ = undefined
 
-vnext :: V -> Nuc -> V
-vnext vp o = v . vp
-  where v ((s0f, s0s), (s1f, s1s)) = ((log (e True o) + max av10 av20, ss0), (log (e False o) + max av11 av21, ss1))
-          where av10 = log (a True False) + s1f
-                av20 = log (a False False) + s0f
-                ss0 = if av10 > av20
-                      then True : s1s
-                      else False : s0s
-                av11 = log (a True True) + s1f
-                av21 = log (a False True) + s0f
-                ss1 = if av11 > av21
-                      then True : s1s
-                      else False : s0s
-
--- maxf :: (S -> (Float, [S])) -> (Float, [S])
--- maxf f = if v1 > v2 then (v1, s1) else (v2, s2)
---   where (v1, s1) = f True
---         (v2, s2) = f False
+vsum :: V -> Nuc -> V
+vsum vp o = v . vp
+  where v (Col {state=s0, score=s0f, chain=s0s}
+          ,Col {state=s1, score=s1f, chain=s1s}) = (vnext s0, vnext s1)
+          where vnext s = Col {state=s, score=log (e s o) + max av1 av0, chain=ss}
+                  where av0 = log (a s0 s) + s0f
+                        av1 = log (a s1 s) + s1f
+                        ss = if av1 > av0
+                             then s : s1s
+                             else s : s0s
 
 e :: S -> Nuc -> Float
-e True A = 0.291
-e True C = 0.209
-e True T = 0.291
-e True G = 0.209
-e False A = 0.169
-e False C = 0.331
-e False T = 0.169
-e False G = 0.331
+e False n
+  | n==A || n==T = 0.291
+  | n==C || n==G = 0.209
+e True n
+  | n==A || n==T = 0.169
+  | n==C || n==G = 0.331
 e _ _  = 0.0
 
 a :: S -> S -> Float
-a True True = 0.999
-a True False = 0.001
-a False False = 0.99
-a False True = 0.01
+a False False = 0.999
+a False True = 0.001
+a True True = 0.99
+a True False = 0.01
