@@ -1,0 +1,121 @@
+island1: 624112 to 628992
+
+example gene follows: 
+
+gene            complement(62397..63512)
+misc_feature    complement(62415..63512)
+                /locus_tag="DICTH_0053"
+                /note="L-fucose isomerase (FucIase) and L-arabinose
+                isomerase (AI) family; composed of FucIase, AI and similar
+                proteins. FucIase converts L-fucose, an aldohexose, to its
+                ketose form, which prepares it for aldol cleavage (similar
+                to the isomerization of glucose...; Region:
+                L-fuc_L-ara-isomerases; cl00947"
+                /db_xref="CDD:242214"
+
+island2: 940093 to 940814
+
+example genes follow: 
+
+     gene            940093..940172
+                     /locus_tag="DICTH_0951"
+                     /db_xref="GeneID:6945988"
+     tRNA            940093..940172
+                     /locus_tag="DICTH_0951"
+                     /product="tRNA-Pro"
+                     /db_xref="GeneID:6945988"
+     gene            940186..940262
+                     /locus_tag="DICTH_0952"
+                     /db_xref="GeneID:6946823"
+     tRNA            940186..940262
+                     /locus_tag="DICTH_0952"
+                     /product="tRNA-Gly"
+                     /db_xref="GeneID:6946823"
+     gene            940279..940357
+                     /locus_tag="DICTH_0953"
+                     /db_xref="GeneID:6946837"
+     tRNA            940279..940357
+                     /locus_tag="DICTH_0953"
+                     /product="tRNA-Arg"
+                     /db_xref="GeneID:6946837"
+     gene            940380..940458
+                     /locus_tag="DICTH_0954"
+                     /db_xref="GeneID:6946846"
+     tRNA            940380..940458
+                     /locus_tag="DICTH_0954"
+                     /product="tRNA-His"
+                     /db_xref="GeneID:6946846"
+     gene            940471..940547
+                     /locus_tag="DICTH_0955"
+                     /db_xref="GeneID:6946828"
+     tRNA            940471..940547
+                     /locus_tag="DICTH_0955"
+                     /product="tRNA-Arg"
+                     /db_xref="GeneID:6946828"
+     gene            940552..940629
+                     /locus_tag="DICTH_0956"
+                     /db_xref="GeneID:6946835"
+     tRNA            940552..940629
+                     /locus_tag="DICTH_0956"
+                     /product="tRNA-Lys"
+                     /db_xref="GeneID:6946835"
+     gene            940633..940718
+                     /locus_tag="DICTH_0957"
+                     /db_xref="GeneID:6946820"
+     tRNA            940633..940718
+                     /locus_tag="DICTH_0957"
+                     /product="tRNA-Leu"
+                     /db_xref="GeneID:6946820"
+     gene            940741..940815
+                     /locus_tag="DICTH_0958"
+                     /db_xref="GeneID:6946822"
+     tRNA            940741..940815
+                     /locus_tag="DICTH_0958"
+                     /product="tRNA-Gly"
+                     /db_xref="GeneID:6946822"
+
+island 3: 1073818,1078881
+
+example genes follow: 
+
+     gene            complement(1073831..1073947)
+                     /gene="rrf_2"
+                     /locus_tag="DICTH_1100"
+                     /db_xref="GeneID:6946402"
+     rRNA            complement(1073831..1073947)
+                     /gene="rrf_2"
+                     /locus_tag="DICTH_1100"
+                     /product="5S ribosomal RNA"
+                     /db_xref="GeneID:6946402"
+     gene            complement(1074012..1077023)
+                     /gene="rrl_2"
+                     /locus_tag="DICTH_1101"
+                     /db_xref="GeneID:6946815"
+     rRNA            complement(1074012..1077023)
+                     /gene="rrl_2"
+                     /locus_tag="DICTH_1101"
+                     /product="23S ribosomal RNA"
+                     /db_xref="GeneID:6946815"
+     gene            complement(1077089..1077166)
+                     /locus_tag="DICTH_1105"
+                     /db_xref="GeneID:6946813"
+     tRNA            complement(1077089..1077166)
+                     /locus_tag="DICTH_1105"
+                     /product="tRNA-Ala"
+                     /db_xref="GeneID:6946813"
+     gene            complement(1077188..1077264)
+                     /locus_tag="DICTH_1106"
+                     /db_xref="GeneID:6946839"
+     tRNA            complement(1077188..1077264)
+                     /locus_tag="DICTH_1106"
+                     /product="tRNA-Ile"
+                     /db_xref="GeneID:6946839"
+     gene            complement(1077333..1078873)
+                     /gene="rrs_2"
+                     /locus_tag="DICTH_1107"
+                     /db_xref="GeneID:6946862"
+     rRNA            complement(1077333..1078873)
+                     /gene="rrs_2"
+                     /locus_tag="DICTH_1107"
+                     /product="16S ribosomal RNA"
+                     /db_xref="GeneID:6946862"
