@@ -1,4 +1,4 @@
--- {-# LANGUAGE Strict #-}
+{-# LANGUAGE Strict #-}
 
 module Lib where
 
@@ -6,7 +6,7 @@ import Debug.Trace
 import Data.List
 
 data Nuc = A | C | T | G | N deriving (Show, Eq)
-data Cell = Cell {state :: S, score :: Float, chain :: [S]}
+data Cell = Cell {state :: S, score :: Double, chain :: [S]}
 
 type S = Bool
 type V = (Cell, Cell) -> (Cell, Cell)
@@ -34,41 +34,33 @@ v0 (Cell {chain=[]}, Cell {chain=[]}) =
   ,Cell {state=True, score=log 0.004, chain=[]})
 v0 _ = undefined
 
-type E = S -> Nuc -> Float
+type E = S -> Nuc -> Double
 
-iter :: [Nuc] -> Int -> (Int, Int, [Int], [Int], T)
-iter _ 0 = (0, 0, [], [], a0)
+iter :: [Nuc] -> Int -> (Int, Int, Int, Int, T)
+iter _ 0 = (0, 0, 0, 0, a0)
 iter os n =
   let (_, _, _, _, ap) = iter os (n-1)
       v = foldl (vsum ap) v0 os
-      (Cell {score=n1, chain=ss1}, Cell {score=n0, chain=ss0}) =
+      (Cell {score=n0, chain=ss0}, Cell {score=n1, chain=ss1}) =
         v (Cell {state=False, score=0, chain=[]}
           ,Cell {state=True, score=0, chain=[]})
       ss = if n1 > n0 then ss1 else ss0
       ins = count id ss
       outs = count not ss
       segs = group ss
-      cgs = map length (filter (elem True) segs)
-      ats = map length (filter (elem False) segs)
-      t = trans segs
+      cgs = length (filter or segs)
+      ats = length (filter (elem False) segs)
+      t True True = 1 - t True False
+      t True False = fromIntegral cgs / fromIntegral ins
+      t False False = 1 - t False True
+      t False True = (fromIntegral ats-1) / fromIntegral (outs-1)
   in (ins, outs, cgs, ats, t)
 
 
-type T = S -> S -> Float
-
-trans :: [[S]] -> T
-trans segs = let cgs = length $ filter (elem True) segs
-                 ats = length $ filter (elem False) segs
-                 cgl = length . concat $ filter (elem True) segs
-                 atl = length . concat $ filter (elem False) segs
-                 t True True = 1 - t True False
-                 t True False = fromIntegral cgs / fromIntegral (cgl)
-                 t False False = 1 - t False True
-                 t False True = (fromIntegral ats-1) / fromIntegral (atl-1)
-             in t
+type T = S -> S -> Double
 
 count :: (a -> Bool) -> [a] -> Int
-count p xs = foldl (\c x -> c + if p x then 1 else 0) 0 xs
+count p = foldl (\c x -> c + if p x then 1 else 0) 0
 
 vsum :: T -> V -> Nuc -> V
 vsum a vp o = v . vp
@@ -83,7 +75,7 @@ vsum a vp o = v . vp
 e0 :: E
 e0 s n = let Just f = lookup (s, n) et0 in f
 
-type ET = [((S, Nuc), Float)]
+type ET = [((S, Nuc), Double)]
 
 et0 :: ET
 et0 = [ ((False, A), 0.291)
@@ -96,7 +88,7 @@ et0 = [ ((False, A), 0.291)
       , ((True, G), 0.331)
       ]
 
-a0 :: S -> S -> Float
+a0 :: S -> S -> Double
 a0 False False = 0.999
 a0 False True = 0.001
 a0 True True = 0.99
