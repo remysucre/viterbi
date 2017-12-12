@@ -20,10 +20,12 @@ someFunc = do
       os   = map toNuc dna
   putStrLn "NC_011297.fna"
   putStrLn l
-  (ss, _, _, _, _, _) <- iter os 5
+  (ss, _, _, _, _, _) <- iter os 10
   let gcs = islands ss
   putStrLn $ "GpC segments: " ++ show gcs
   print "DONE"
+
+-- get GC islands
 
 islands :: [S] -> [(Int, Int)]
 islands ss =
@@ -42,12 +44,16 @@ evens :: [Int] -> [Int]
 evens ns = ms
   where (_, ms) = foldl (\(xs, ys) n -> (ys, n:xs)) ([], []) ns
 
+-- parse nucleotides
+
 toNuc :: Char -> Nuc
 toNuc 'A' = A
 toNuc 'C' = C
 toNuc 'T' = T
 toNuc 'G' = G
 toNuc x   = trace [x] N
+
+-- initialization
 
 v0 :: V
 v0 (Cell {chain=[]}, Cell {chain=[]}) =
@@ -56,6 +62,8 @@ v0 (Cell {chain=[]}, Cell {chain=[]}) =
 v0 _ = undefined
 
 type E = S -> Nuc -> Double
+
+-- iteratively update transition probability
 
 iter :: [Nuc] -> Int -> IO ([S], Int, Int, Int, Int, T)
 iter _ 0 = return ([], 0, 0, 0, 0, a0)
@@ -104,16 +112,20 @@ type T = S -> S -> Double
 count :: (a -> Bool) -> [a] -> Int
 count p = foldl (\c x -> c + if p x then 1 else 0) 0
 
+-- fill in the next column
+
 vsum :: T -> V -> Nuc -> V
 vsum a vp o = v . vp
-  where v (Cell {state=s0, score=s0f, chain=s0s}
+  where v (Cell {state=s0, score=s0f, chain=s0s} -- the previous column
           ,Cell {state=s1, score=s1f, chain=s1s}) = (vnext s0, vnext s1)
           where vnext s = Cell { state=s
                                , score=log (e0 s o) + max av1 av0
                                , chain=ss}
-                  where av0 = log (a s0 s) + s0f
+                  where av0 = log (a s0 s) + s0f -- transition probability
                         av1 = log (a s1 s) + s1f
-                        ss  = s : if av1 > av0 then s1s else s0s
+                        ss  = s : if av1 > av0 then s1s else s0s -- HMC
+
+-- emission probability
 
 e0 :: E
 e0 s n = let Just f = lookup (s, n) et0 in f
@@ -130,6 +142,8 @@ et0 = [ ((False, A ), 0.291)
       , ((True, C  ), 0.331)
       , ((True, G  ), 0.331)
       ]
+
+-- transition probability
 
 a0 :: S -> S -> Double
 a0 False False = 0.999
